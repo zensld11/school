@@ -1,5 +1,6 @@
 package com.degilok.al.school.service.impl;
 
+import com.degilok.al.school.enums.Role;
 import com.degilok.al.school.model.User;
 import com.degilok.al.school.model.dto.UserDto;
 import com.degilok.al.school.repository.UserRepository;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleServiceImpl roleService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleServiceImpl roleService) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
 
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
         user.setSurname(userDto.surname());
         user.setEmail(userDto.email());
         user.setPassword(userDto.password());
-        user.setUsersPost(userDto.usersPost());
+        user.setUsersRole(userDto.usersRole());
 
         return userRepository.save(user);
     }
@@ -33,6 +36,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User authUser(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password);
-
     }
+
+    public User deleteUser(String email, String userEmailCurrent){
+
+        Role userCurrentRole = roleService.getUserRole(userEmailCurrent);
+
+        if (userCurrentRole != Role.ADMINISTRATOR){
+            throw new SecurityException("Недостаточно прав для удаления пользователя");
+        }
+        User userToDelete = userRepository.findByEmail(email);
+        if (userToDelete != null){
+            userRepository.delete(userToDelete);
+            return userToDelete;
+        }else {
+            return null;
+        }
+    }
+
 }

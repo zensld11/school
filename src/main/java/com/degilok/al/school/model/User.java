@@ -1,6 +1,6 @@
 package com.degilok.al.school.model;
 
-import com.degilok.al.school.enums.Post;
+import com.degilok.al.school.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Post usersPost;
+    private Role usersRole;
 }
 
 

@@ -1,6 +1,6 @@
 package com.degilok.al.school.enums;
 
-public enum Post
+public enum Role
 {
     ADMINISTRATOR,
     DIRECTOR,
